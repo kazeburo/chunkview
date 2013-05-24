@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -64,21 +64,22 @@ while (1) {
     }
 }
 
-debugf "response header %s", $special_headers;
+
 die "not successful response code: $res_status" if $res_status != '200';
+print "* Chunk View\n";
+print "** Headers\n";
+print " $_: ".$special_headers->{$_}."\n" for keys %{$special_headers};
 die "not chunked response" if $special_headers->{'transfer-encoding'} ne 'chunked';
 my $res_content = '';
 my @chunk = _read_body_chunked($client,
                \$res_content, $rest_header, $timeout, $special_headers->{'content-encoding'} =~ m/(?:gzip|deflate)/);
-debugf("chunk %s",\@chunk);
-my $tbl = Text::ASCIITable->new({ headingText => 'Chunk View' });
+print "** chunk table\n";
+my $tbl = Text::ASCIITable->new();
 $tbl->setCols('chunk size','byte','content');
 $tbl->alignCol('chunk size','right');
 $tbl->alignCol('byte','right');
 $tbl->addRow(@{$_}) for @chunk;
 print $tbl;
-say "* Headers";
-say "$_: ".$special_headers->{$_} for keys %{$special_headers};
 
 sub _read_body_chunked {
     my ($sock, $res_content, $rest_header, $timeout, $is_gzip) = @_;
