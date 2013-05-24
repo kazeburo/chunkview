@@ -1,4 +1,4 @@
-chunkview.pl - HTTP/1.1 Chunked Transfer Visusalizer
+chunkview.pl - HTTP/1.1 Chunked Transfer Visualizer
 
 ## SAMPLE
 
